@@ -3,6 +3,9 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { extractFirstHeading } from '@hedgedoc/commons';
+import { parseDocument } from 'htmlparser2';
+import MarkdownIt from 'markdown-it';
 import {
   Column,
   CreateDateColumn,
@@ -103,12 +106,19 @@ export class Revision {
     newRevision.patch = patch;
     newRevision.content = content;
     newRevision.length = content.length;
-    newRevision.title = null;
+    newRevision.title = Revision.extractTitleFromMarkdown(content);
     newRevision.description = null;
     newRevision.tags = Promise.resolve([]);
     newRevision.note = Promise.resolve(note);
     newRevision.edits = Promise.resolve([]);
     newRevision.yjsStateVector = yjsStateVector ?? null;
     return newRevision;
+  }
+
+  static extractTitleFromMarkdown(content: string): string | null {
+    const markdownIt = new MarkdownIt('default');
+    const html = markdownIt.render(content);
+    const document = parseDocument(html);
+    return extractFirstHeading(document)?.trim() ?? null;
   }
 }
