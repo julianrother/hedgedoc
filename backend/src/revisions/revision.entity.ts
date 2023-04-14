@@ -14,6 +14,7 @@ import {
 } from 'typeorm';
 
 import { Note } from '../notes/note.entity';
+import { Tag } from '../notes/tag.entity';
 import { Edit } from './edit.entity';
 
 /**
@@ -33,6 +34,25 @@ export class Revision {
     type: 'text',
   })
   patch: string;
+
+  @Column({
+    nullable: true,
+    type: 'text',
+  })
+  title: string | null;
+
+  @Column({
+    nullable: true,
+    type: 'text',
+  })
+  description: string | null;
+
+  @ManyToMany((_) => Tag, (tag) => tag.revisions, {
+    eager: true,
+    cascade: true,
+  })
+  @JoinTable()
+  tags: Promise<Tag[]>;
 
   /**
    * The note content at this revision.
@@ -83,6 +103,9 @@ export class Revision {
     newRevision.patch = patch;
     newRevision.content = content;
     newRevision.length = content.length;
+    newRevision.title = null;
+    newRevision.description = null;
+    newRevision.tags = Promise.resolve([]);
     newRevision.note = Promise.resolve(note);
     newRevision.edits = Promise.resolve([]);
     newRevision.yjsStateVector = yjsStateVector ?? null;
