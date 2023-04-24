@@ -31,12 +31,12 @@ export const HelpDropdown: React.FC = () => {
         </Dropdown.Header>
         <ShortcutsHelpMenuEntry />
         <CheatsheetHelpMenuEntry />
-        <Dropdown.Divider />
+        <VersionInfoHelpMenuEntry />
         <LegalHelpMenuEntries />
+        <Dropdown.Divider />
         <Dropdown.Header>
           <Trans i18nKey={'help.about'} />
         </Dropdown.Header>
-        <VersionInfoHelpMenuEntry />
         <ProjectLinksHelpMenuEntry />
       </Dropdown.Menu>
     </Dropdown>
